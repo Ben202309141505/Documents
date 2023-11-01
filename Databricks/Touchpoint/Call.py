@@ -3,7 +3,7 @@ from pyspark.sql.functions import current_timestamp
 
 #df=spark.read.format("delta").load("abfss://raw@azrdevddpcn01adls.dfs.core.chinacloudapi.cn/touchpoint/call/2023-10-25/10")
 df=spark.read.format("delta").load("abfss://raw@azrdevddpcn01adls.dfs.core.chinacloudapi.cn/touchpoint/call/2023-10-25/10")
-df = df.withColumn("batchno", current_timestamp().cast("long"))
+#df = df.withColumn("batchno", current_timestamp().cast("long"))
 
 df.createOrReplaceTempView("df_v")
 
@@ -26,10 +26,12 @@ df.write.jdbc(connection_string, "[stg_touchpoint].[call]", mode="append")
 
 df.write.format("delta").mode('append').option("header", "true").save("abfss://transform@azrdevddpcn01adls.dfs.core.chinacloudapi.cn/Touchpoint/call")
 
+df.write.format("csv").mode('append').option("header", "true").save("abfss://transform@azrdevddpcn01adls.dfs.core.chinacloudapi.cn/Touchpoint/test/2023-10-25/10")
+
 
 # COMMAND ----------
 
+df1=spark.read.format("csv").load("abfss://transform@azrdevddpcn01adls.dfs.core.chinacloudapi.cn/Touchpoint/test/*")
 
 
-dbutils.fs.rm("abfss://transform@azrdevddpcn01adls.dfs.core.chinacloudapi.cn/touchpoint", True)
-
+dbutils.fs.rm("abfss://transform@azrdevddpcn01adls.dfs.core.chinacloudapi.cn/Touchpoint/test", True)
