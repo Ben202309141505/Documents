@@ -18,6 +18,8 @@ driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver"
 pwdstring = dbutils.secrets.get(scope="ddpcn-key-vault-secrets", key="dwhchinaadmin-secret")
 connection_string = dbutils.secrets.get(scope="ddpcn-key-vault-secrets", key="connection-dwhchina-secret")
 connection_string = connection_string.replace("{password}",pwdstring)
+#for char in connection_string:
+#    print(char, end="\u200B")
 
 df.write.jdbc(connection_string, "[stg_touchpoint].[call]", mode="append")
 
@@ -35,3 +37,4 @@ df1=spark.read.format("csv").load("abfss://transform@azrdevddpcn01adls.dfs.core.
 
 
 dbutils.fs.rm("abfss://transform@azrdevddpcn01adls.dfs.core.chinacloudapi.cn/Touchpoint/test", True)
+
